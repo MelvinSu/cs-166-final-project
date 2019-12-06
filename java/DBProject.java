@@ -256,13 +256,20 @@ public class DBProject {
    public static void addCustomer(DBProject esql){
 	// Given customer details add the customer in the DB
 	try {
-	   	String query = "INSERT INTO Customer (customerID,fName,lName,Address,phNo,DOB,gender) VALUES (";
-		String cID = in.readLine();
-		String fN = in.readLine();
-		String lN = in.readLine();
-		String addr = in.readLine();
-		String phone = in.readLine();
-		String DOB = in.readLine();
+      String query = "INSERT INTO Customer (customerID,fName,lName,Address,phNo,DOB,gender) VALUES (";
+      System.out.println("Enter the customer ID:");
+      String cID = in.readLine();
+      System.out.println("Enter the first name:");
+      String fN = in.readLine();
+      System.out.println("Enter the last name:");
+      String lN = in.readLine();
+      System.out.println("Enter the customer's address:");
+      String addr = in.readLine();
+      System.out.println("Enter the phone number:");
+      String phone = in.readLine();
+      System.out.println("Enter the date of birth:");
+      String DOB = in.readLine();
+      System.out.println("Enter Male/Female/Other for gender:");
 		String gender = in.readLine();
 
 		query += cID + ",'" + fN + "','" + lN + "','" + addr + "'," + phone + ",'" + DOB + "','" + gender + "');";
@@ -281,9 +288,12 @@ public class DBProject {
    public static void addRoom(DBProject esql){
 	  // Given room details add the room in the DB
 	try {
-		String query = "INSERT INTO ROOM (hotelID, roomNo, roomType) VALUES (";
-		String hID = in.readLine();
-		String rID = in.readLine();
+      String query = "INSERT INTO ROOM (hotelID, roomNo, roomType) VALUES (";
+      System.out.println("Enter the hotel ID:");
+      String hID = in.readLine();
+      System.out.println("Enter the room number:");
+      String rID = in.readLine();
+      System.out.println("Enter the room type:");
 		String rTy = in.readLine();
 		query += hID + "," + rID + ",'" + rTy + "');";
 		System.out.println(query);
@@ -302,10 +312,14 @@ public class DBProject {
    public static void addMaintenanceCompany(DBProject esql){
       // Given maintenance Company details add the maintenance company in the DB
 	try {
-		String query = "INSERT INTO MaintenanceCompany (cmpID,name,address,isCertified) VALUES (";
-		String cmpID = in.readLine();
-		String name = in.readLine();
-		String addr = in.readLine();
+      String query = "INSERT INTO MaintenanceCompany (cmpID,name,address,isCertified) VALUES (";
+      System.out.println("Enter the company ID:");
+      String cmpID = in.readLine();
+      System.out.println("Enter the name of the company:");
+      String name = in.readLine();
+      System.out.println("Enter the address of the company:");
+      String addr = in.readLine();
+      System.out.println("Enter TRUE or FALSE if the company is certified:");
 		String isCer = in.readLine();
 
 		query += cmpID + ",'" + name + "','" + addr + "','" + isCer + "');";
@@ -341,19 +355,30 @@ public class DBProject {
    public static void repairRequest(DBProject esql){
 	  // Given a hotelID, Staff SSN, roomNo, repairID , date create a repair request in the DB
 	try {
-		String query = "INSERT INTO Request (reqID,managerID,repairID,requestDate,description) VALUES (";
-		String reqID = in.readLine();
-		String managerID = in.readLine();
-		String repairID = in.readLine();
-		String requestDate = in.readLine();
-		String desc = in.readLine();
+      //INSERT INTO Repair (rID,hotelID,roomNo,mCompany,repairDate) VALUES ((SELECT MAX(rID) + 1 FROM Repair R), 1, 1, 0, '2000-1-1');
+		System.out.println("Enter the hotel ID:");
+      String hotelID = in.readLine();
+      System.out.println("Enter the staff SSN:");
+      String staffssn = in.readLine();
+      System.out.println("Enter the room number:");
+      String roomNo = in.readLine();
+      System.out.println("Enter the request date:");
+      String date = in.readLine();
+      String query = "INSERT INTO Repair (rID,hotelID,roomNo,mCompany,repairDate) VALUES ((SELECT MAX(rID) + 1 FROM Repair R)," + hotelID + ", " + roomNo + ",0,'2000-1-1')";
 		
-		query += reqID + "," + managerID + "," + repairID + ",'" + requestDate + "','" + desc + "');";
 		System.out.println(query);
-		esql.executeUpdate(query);
+      esql.executeUpdate(query);
 
-		String temp = "SELECT R.requestDate FROM Request R WHERE R.reqID = " + reqID + " AND R.managerID = " + managerID + " AND R.repairID = " + repairID + "AND R.requestDate = '" + requestDate + "';";
-		esql.executeQuery(temp);
+		String temp ="SELECT MAX(rID) FROM Repair R";
+      esql.executeQuery(temp);
+      
+      String query1 = "INSERT INTO Request (reqID, managerID, repairID, requestDate) VALUES ((SELECT MAX(R.reqID) + 1 FROM Request R)," + staffssn + ", (SELECT MAX(rID) FROM Repair R),'" + date + "');";
+
+      System.out.println(query1);
+      esql.executeUpdate(query1);
+
+      String temp1 ="SELECT MAX(reqID) FROM Request R";
+      esql.executeQuery(temp1);
 	}
 	catch (Exception e){
 		System.err.println(e.getMessage());
@@ -365,6 +390,7 @@ public class DBProject {
       //SELECT R FROM Room R WHERE R.hotelID = 381 AND R.roomno NOT IN (SELECT R.roomno FROM Booking B, Room R WHERE B.hotelID = 381 AND R.hotelID = 381 AND B.roomno = R.roomno);
       try {
           String query = "SELECT COUNT(R) FROM Room R WHERE R.hotelID = ";
+          System.out.println("Enter the hotel ID:");
           String hotelID = in.readLine();
   
           query += hotelID + " AND R.roomno NOT IN (SELECT R.roomno FROM Booking B, Room R WHERE B.hotelID = " + hotelID +  "AND R.hotelID = " + hotelID + " AND B.roomno = R.roomno);";
@@ -379,6 +405,7 @@ public class DBProject {
       // Given a hotelID, get the count of rooms booked
       try {
           String query = "SELECT COUNT(B) FROM Booking B WHERE B.hotelId = ";
+          System.out.println("Enter the hotel ID:");
           String hotelID = in.readLine();
   
           query += hotelID + ";";
@@ -393,7 +420,9 @@ public class DBProject {
       // Given a hotelID, date - list all the rooms available for a week(including the input date) 
       try {
           String query = "SELECT B FROM Booking B WHERE B.hotelId = ";
+          System.out.println("Enter the hotel ID:");
           String hotelID = in.readLine();
+          System.out.println("Enter the starting date:");
           String date = in.readLine();
           
           query += hotelID + " and B.bookingDate <= (DATE '" + date + "' + INTERVAL '7 day') and B.bookingDate > '" + date + "';";
@@ -408,8 +437,11 @@ public class DBProject {
       // List Top K Rooms with the highest price for a given date range
       try {
           String query = "SELECT B FROM Booking B WHERE B.bookingDate >= '";
+          System.out.println("Enter first date:");
           String date1 = in.readLine();
+          System.out.println("Enter second date:");
           String date2 = in.readLine();
+          System.out.println("Enter max number of rooms to display:");
           String k = in.readLine();
   
           query += date1 + "' AND B.bookingDate <= '" + date2 + "' ORDER BY B.price DESC LIMIT " + k;
